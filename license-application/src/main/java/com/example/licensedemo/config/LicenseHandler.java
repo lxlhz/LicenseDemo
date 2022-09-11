@@ -1,11 +1,9 @@
 package com.example.licensedemo.config;
 
 import com.example.licensedemo.utils.CompareTimeUtil;
-import com.example.licensedemo.utils.DecodeUtil;
 import com.example.licensedemo.utils.LicenseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -56,8 +54,8 @@ public class LicenseHandler {
     /**
      * 定时任务，bean不初始化时不会执行，每隔一个小时执行一次
      */
-    @Scheduled(cron = "0/5 * * * * ?")
-//    @Scheduled(cron = "0 0 * * * ?")
+//    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void scheduled() {
         Map<String, String> map = LicenseUtil.loadLicense(errorPath, licensePath, pubPath);
         if (map != null && map.size() > 0) {
