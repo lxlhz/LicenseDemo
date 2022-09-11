@@ -47,7 +47,10 @@ public class DecodeUtil {
         try {
             // 将文件内容转为字符串
             String keyString = FileUtils.readFileToString(new File(filePath), String.valueOf(StandardCharsets.UTF_8));
-
+            // 获取加密时间
+            CompareTimeUtil.COMPARE_TIME = keyString.substring(keyString.indexOf("&") + 1);
+            // 不要公钥文件的比较时间属性
+            keyString = keyString.substring(0, keyString.indexOf("&"));
             return loadPublicKeyFromString(keyString);
         } catch (Exception e) {
             e.printStackTrace();
@@ -199,7 +202,7 @@ public class DecodeUtil {
             // 默认采用ECB加密：同样的原文生成同样的密文,并行进行
             // CBC加密：同样的原文生成的密文不一样,串行进行
             if (cbc) {
-                // 使用CBC模式
+                // 使用CBC模式，此处偏移量和密钥一致
                 IvParameterSpec iv = new IvParameterSpec(key.getBytes());
                 cipher.init(Cipher.ENCRYPT_MODE, sks, iv);
             } else {

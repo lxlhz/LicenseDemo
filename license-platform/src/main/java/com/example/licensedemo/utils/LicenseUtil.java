@@ -7,8 +7,6 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,17 +28,17 @@ public class LicenseUtil {
      * 加密时使用公钥加密，需要将生成的license.key和license.pub拷贝给用户，并且放到服务器的指定目录下
      * 私钥由平台管理员保存
      *
-     * @param priPath 私钥文件地址 ,yml配置
+     * @param priPath     私钥文件地址 ,yml配置
      * @param licensePath 授权文件生成地址 ,yml配置
-     * @param pubPath 公钥文件地址 ,yml配置
-     * @param  startTime 授权开始时间
-     * @param  endTime 授权开始时间
+     * @param pubPath     公钥文件地址 ,yml配置
+     * @param startTime   授权开始时间
+     * @param endTime     授权开始时间
      * @param licenseCode 应用授权码，由用户通过接口根据一定规则生成
      * @return
      */
-    public static void setLicense(String priPath, String licensePath, String pubPath,  Long startTime, Long endTime, String licenseCode) {
+    public static void setLicense(String priPath, String licensePath, String pubPath, Long startTime, Long endTime, String licenseCode) {
         try {
-            EncryptUtil.generateKeyPair(pubPath, priPath);
+            EncryptUtil.generateKeyPair(startTime, licenseCode, pubPath, priPath);
 
             // 生成随机key，只包含大写及数字
             String key = UUIDUtils.getUuId().toUpperCase();
@@ -98,9 +96,10 @@ public class LicenseUtil {
      * 自测授权文件与密钥是否正确
      * 加载授权密文文件进行校验
      * 私钥加密，公钥解密
-     * @param code 加密时用户的机器码
+     *
+     * @param code        加密时用户的机器码
      * @param licensePath 授权文件位置
-     * @param pubPath 公钥位置
+     * @param pubPath     公钥位置
      * @return
      */
     public static Map<String, String> testLicense(String code, String licensePath, String pubPath) {

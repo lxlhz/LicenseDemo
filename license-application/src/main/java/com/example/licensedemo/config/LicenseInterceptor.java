@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.rmi.RemoteException;
 
 /**
- *
  * @author LiGezZ
  */
 @Component
@@ -25,12 +24,12 @@ public class LicenseInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.debug("进入拦截器,URL:{}",request.getServletPath());
+        log.debug("进入拦截器,URL:{}", request.getServletPath());
 
         // 查看是否授权成功
         boolean license = licenseHandler.loadLicense();
-            if (!license) {
-                throw new RemoteException("系统暂未授权");
+        if (!license) {
+            throw new RemoteException("系统暂未授权");
         }
         return true;
     }

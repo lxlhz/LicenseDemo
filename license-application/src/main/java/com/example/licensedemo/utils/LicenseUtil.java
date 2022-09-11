@@ -1,5 +1,6 @@
 package com.example.licensedemo.utils;
 
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
@@ -34,9 +35,10 @@ public class LicenseUtil {
 
     /**
      * 加载授权码文件，判断是否授权成功
-     * @param errorPath 错误日志位置
+     *
+     * @param errorPath   错误日志位置
      * @param licensePath 授权码文件位置
-     * @param pubPath 公钥位置
+     * @param pubPath     公钥位置
      * @return
      */
     public static Map<String, String> loadLicense(String errorPath, String licensePath, String pubPath) {
@@ -55,7 +57,6 @@ public class LicenseUtil {
             }
             String decryptLicense = kaiserBuilder.toString();
             // 使用私密进行解密获取加密参数
-            // 从文件中加载公钥
             PublicKey publicKey = DecodeUtil.loadPublicKeyFromFile(pubPath);
             // 获取原文参数
             String params = DecodeUtil.decryptByAsymmetric(decryptLicense, publicKey);
@@ -88,9 +89,10 @@ public class LicenseUtil {
                 throw new RuntimeException("解析key的签名错误");
             }
 
+            // 获取授权比较时间
+            long compareTime = CompareTimeUtil.getCompareTime();
             // 判断授权时间
-            long now = System.currentTimeMillis();
-            if (now > endTime || now < startTime) {
+            if (compareTime > endTime || compareTime < startTime) {
                 throw new RuntimeException("授权时间无效!");
             }
 

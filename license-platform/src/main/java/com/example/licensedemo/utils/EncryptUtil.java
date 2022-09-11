@@ -19,7 +19,6 @@ public class EncryptUtil {
 
     public final static String RSA = "RSA";
 
-
     /**
      * 打印密钥对并且保存到文件
      * pubPath 公钥生成目录
@@ -27,7 +26,7 @@ public class EncryptUtil {
      *
      * @return
      */
-    public static void generateKeyPair(String pubPath, String priPath) {
+    public static void generateKeyPair(Long startTime, String licenseCode, String pubPath, String priPath) {
         try {
             //  创建密钥对生成器对象
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(RSA);
@@ -43,6 +42,12 @@ public class EncryptUtil {
 
             // 保存文件
             if (pubPath != null) {
+                // 在公钥文件中追加一个当前时间戳，使用改时间与授权结束时间进行比较
+                // 并且授权方会定时更新一个最新的时间，到公钥文件中
+                // 获取比较时间
+                String compareTime = CompareTimeUtil.generateCompareTime(startTime, licenseCode);
+                publicKeyString = publicKeyString.concat("&").concat(compareTime);
+
                 FileUtils.writeStringToFile(new File(pubPath), publicKeyString, String.valueOf(StandardCharsets.UTF_8));
             }
             if (priPath != null) {
