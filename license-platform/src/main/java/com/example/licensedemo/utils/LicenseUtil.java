@@ -86,7 +86,7 @@ public class LicenseUtil {
             // 将密文写入文件
             FileUtils.writeStringToFile(new File(licensePath), encryptKaiser, String.valueOf(StandardCharsets.UTF_8));
         } catch (Exception e) {
-            log.error("生成授权文件失效！");
+            log.error("生成授权文件失效！", e);
             throw new RuntimeException("生成授权文件失效!");
         }
     }
@@ -153,7 +153,7 @@ public class LicenseUtil {
 
             // 判断授权时间
             long now = System.currentTimeMillis();
-            if (now > endTime || now < startTime) {
+            if (now >= endTime || now < startTime) {
                 throw new RuntimeException("授权时间无效!");
             }
 
@@ -166,7 +166,7 @@ public class LicenseUtil {
             System.out.println("授权验证成功！");
             return paramMap;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return null;
         }
     }

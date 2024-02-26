@@ -92,7 +92,7 @@ public class LicenseUtil {
             // 获取授权比较时间
             long compareTime = CompareTimeUtil.getCompareTime();
             // 判断授权时间
-            if (compareTime > endTime || compareTime < startTime) {
+            if (compareTime >= endTime || compareTime < startTime) {
                 throw new RuntimeException("授权时间无效!");
             }
 
@@ -110,7 +110,7 @@ public class LicenseUtil {
             System.out.println("授权验证成功！");
             return paramMap;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             try {
                 writeErrorToFile(e, errorPath);
             } catch (IOException ex) {

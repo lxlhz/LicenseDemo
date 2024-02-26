@@ -1,11 +1,14 @@
 package com.example.licensedemo.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.*;
 
 /**
  * @Author: LiHuaZhi
  * @Description: 操作加密授权信息
  **/
+@Slf4j
 public class CipherUtil {
 
     private static boolean isLinux = true;
@@ -43,7 +46,7 @@ public class CipherUtil {
                     "&bios=" + bios +
                     "&mainBoard=" + mainBoard;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException();
         }
     }
@@ -67,7 +70,7 @@ public class CipherUtil {
             }
             input.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException();
         }
         return result.toString().split("SerialNumber")[1].trim();
@@ -100,13 +103,13 @@ public class CipherUtil {
             }
         } catch (Exception e) {
             System.out.println("获取windows信息错误");
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         } finally {
             if (input != null) {
                 try {
                     input.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage(), e);
                 }
             }
             if (file != null) {
@@ -157,7 +160,7 @@ public class CipherUtil {
             }
             return sb.toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return null;
     }

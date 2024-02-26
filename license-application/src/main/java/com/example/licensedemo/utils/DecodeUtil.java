@@ -1,6 +1,7 @@
 package com.example.licensedemo.utils;
 
 import com.sun.org.apache.xml.internal.security.utils.Base64;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
 import javax.crypto.Cipher;
@@ -17,6 +18,7 @@ import java.util.Arrays;
  * @Author: LiHuaZhi
  * @Description: 解密工具类
  **/
+@Slf4j
 public class DecodeUtil {
 
     public final static String RSA = "RSA";
@@ -26,9 +28,9 @@ public class DecodeUtil {
     public final static String AES = "AES";
 
     /**
-     * AES加密算法，key的大小必须是16个字节，可以任意，必须与平台管理端保持一致
+     * AES加密算法，key的大小必须是16个字节，可以任意
      */
-    public final static String AES_KEY = "5LiN6KaB56C06Kej";
+    public final static String AES_KEY = "6LiN6KaB56C06Kej";
 
     /**
      * 设置为CBC加密，默认情况下ECB比CBC更高效
@@ -53,7 +55,7 @@ public class DecodeUtil {
             keyString = keyString.substring(0, keyString.indexOf("&"));
             return loadPublicKeyFromString(keyString);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("获取公钥文件字符串失败！");
         }
     }
@@ -76,7 +78,7 @@ public class DecodeUtil {
             // 获取公钥
             return keyFactory.generatePublic(key);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("获取公钥失败！");
         }
     }
@@ -98,7 +100,7 @@ public class DecodeUtil {
             return new String(getMaxResultDecrypt(encrypted, cipher));
         } catch (
                 Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("解密失败！");
         }
     }
@@ -116,7 +118,7 @@ public class DecodeUtil {
         int inputLength = inputArray.length;
 
         // 最大解密字节数，超出最大字节数需要分组加密
-        int MAX_ENCRYPT_BLOCK = 128;
+        int MAX_ENCRYPT_BLOCK = 256;
         // 标识
         int offSet = 0;
         byte[] resultBytes = {};
@@ -215,7 +217,7 @@ public class DecodeUtil {
             // 输出加密后的数据
             return Base64.encode(bytes);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("加密失败！");
         }
     }
@@ -268,7 +270,7 @@ public class DecodeUtil {
             //  因为是明文，所以直接返回
             return new String(bytes);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("解密失败！");
         }
     }

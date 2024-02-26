@@ -1,10 +1,7 @@
 package com.example.licensedemo.entity;
 
-import com.sun.istack.internal.NotNull;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.time.LocalDateTime;
 
 /**
  * @Author: LiHuaZhi

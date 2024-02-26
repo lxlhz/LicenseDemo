@@ -12,10 +12,12 @@
 
 # 2、平台系统
 **搭建系统：** `license-platform`
+
 ## 2.1 加密工具类
 主要使用了凯撒加密、RSA非对称加密，在工具类中生成私钥和公钥，并且将时间、机器码等参数通过私钥加密形成加密文件，在应用系统中使用公钥进行解密，流程如下：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/0483aaf4ec284428aa31b830eaebf2d8.png#pic_center)
 **代码实现 - `EncryptUtil`：**
+
 ```java
 
 import com.sun.org.apache.xml.internal.security.utils.Base64;

@@ -1,6 +1,6 @@
 package com.example.licensedemo.utils;
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
 import javax.crypto.Cipher;
@@ -10,11 +10,13 @@ import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
+import java.util.Base64;
 
 /**
  * @Author: LiHuaZhi
  * @Description: 加密工具类
  **/
+@Slf4j
 public class EncryptUtil {
 
     public final static String RSA = "RSA";
@@ -34,8 +36,8 @@ public class EncryptUtil {
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
             PrivateKey privateKey = keyPair.getPrivate();
             PublicKey publicKey = keyPair.getPublic();
-            String privateKeyString = Base64.encode(privateKey.getEncoded());
-            String publicKeyString = Base64.encode(publicKey.getEncoded());
+            String privateKeyString = Base64.getEncoder().encodeToString(privateKey.getEncoded());
+            String publicKeyString = Base64.getEncoder().encodeToString(publicKey.getEncoded());
 
             System.out.println("私钥：" + privateKeyString);
             System.out.println("公钥：" + publicKeyString);
@@ -54,7 +56,7 @@ public class EncryptUtil {
                 FileUtils.writeStringToFile(new File(priPath), privateKeyString, String.valueOf(StandardCharsets.UTF_8));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("生成密钥对失败！");
         }
     }
@@ -73,7 +75,7 @@ public class EncryptUtil {
 
             return loadPublicKeyFromString(keyString);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("获取公钥文件字符串失败！");
         }
     }
@@ -91,7 +93,7 @@ public class EncryptUtil {
             String keyString = FileUtils.readFileToString(new File(filePath), String.valueOf(StandardCharsets.UTF_8));
             return loadPrivateKeyFromString(keyString);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("获取私钥文件字符串失败！");
         }
     }
@@ -106,7 +108,7 @@ public class EncryptUtil {
     public static PublicKey loadPublicKeyFromString(String keyString) {
         try {
             // 进行Base64解码
-            byte[] decode = Base64.decode(keyString);
+            byte[] decode = Base64.getMimeDecoder().decode(keyString);
             // 获取密钥工厂
             KeyFactory keyFactory = KeyFactory.getInstance(RSA);
             // 构建密钥规范
@@ -114,7 +116,7 @@ public class EncryptUtil {
             // 获取公钥
             return keyFactory.generatePublic(key);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("获取公钥失败！");
         }
     }
@@ -129,7 +131,7 @@ public class EncryptUtil {
     public static PrivateKey loadPrivateKeyFromString(String keyString) {
         try {
             // 进行Base64解码
-            byte[] decode = Base64.decode(keyString);
+            byte[] decode = Base64.getMimeDecoder().decode(keyString);
             // 获取密钥工厂
             KeyFactory keyFactory = KeyFactory.getInstance(RSA);
             // 构建密钥规范
@@ -137,7 +139,7 @@ public class EncryptUtil {
             // 生成私钥
             return keyFactory.generatePrivate(key);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("获取私钥失败！");
         }
     }
@@ -158,9 +160,9 @@ public class EncryptUtil {
             // 初始化模式(加密)和密钥
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] resultBytes = getMaxResultEncrypt(input, cipher);
-            return Base64.encode(resultBytes);
+            return Base64.getEncoder().encodeToString(resultBytes);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("加密失败！");
         }
     }
@@ -182,7 +184,7 @@ public class EncryptUtil {
             return new String(getMaxResultDecrypt(encrypted, cipher));
         } catch (
                 Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("解密失败！");
         }
     }
@@ -225,11 +227,11 @@ public class EncryptUtil {
      * @throws Exception
      */
     private static byte[] getMaxResultDecrypt(String decryptText, Cipher cipher) throws Exception {
-        byte[] inputArray = Base64.decode(decryptText.getBytes(StandardCharsets.UTF_8));
+        byte[] inputArray = Base64.getMimeDecoder().decode(decryptText.getBytes(StandardCharsets.UTF_8));
         int inputLength = inputArray.length;
 
         // 最大解密字节数，超出最大字节数需要分组加密
-        int MAX_ENCRYPT_BLOCK = 128;
+        int MAX_ENCRYPT_BLOCK = 256;
         // 标识
         int offSet = 0;
         byte[] resultBytes = {};

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Map;
 
@@ -58,7 +59,7 @@ public class LicenseHandler {
     @Scheduled(cron = "0 0 * * * ?")
     public void scheduled() {
         Map<String, String> map = LicenseUtil.loadLicense(errorPath, licensePath, pubPath);
-        if (map != null && map.size() > 0) {
+        if (map != null && !CollectionUtils.isEmpty(map)) {
             FAIL_NUM = 0;
             license = true;
 

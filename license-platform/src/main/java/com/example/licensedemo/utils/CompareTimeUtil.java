@@ -1,20 +1,22 @@
 package com.example.licensedemo.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
-
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 /**
  * @Author: LiHuaZhi
  * @Date: 2022/9/11 16:42
  * @Description: 获取比较时间工具类
  **/
+@Slf4j
 public class CompareTimeUtil {
 
     /**
@@ -61,7 +63,7 @@ public class CompareTimeUtil {
         // 遍历字符串
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < compareTime.length(); i++) {
-            sb.append((compareTime.charAt(i) - 0));
+            sb.append((compareTime.charAt(i)));
             if (i < compareTime.length() - 1) {
                 sb.append("-");
             }
@@ -112,9 +114,9 @@ public class CompareTimeUtil {
             byte[] bytes = cipher.doFinal(input.getBytes());
 
             // 输出加密后的数据
-            return Base64.encode(bytes);
+            return Base64.getEncoder().encodeToString(bytes);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("加密失败！");
         }
     }
@@ -141,11 +143,11 @@ public class CompareTimeUtil {
             cipher.init(Cipher.DECRYPT_MODE, sks, iv);
 
             // 3. 解密，上面使用的base64编码，下面直接用密文
-            byte[] bytes = cipher.doFinal(Base64.decode(input));
+            byte[] bytes = cipher.doFinal(Base64.getMimeDecoder().decode(input));
             //  因为是明文，所以直接返回
             return new String(bytes);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("解密失败！");
         }
     }

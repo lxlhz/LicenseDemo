@@ -1,6 +1,7 @@
 package com.example.licensedemo.utils;
 
 import com.sun.org.apache.xml.internal.security.utils.Base64;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
 import javax.crypto.Cipher;
@@ -19,6 +20,7 @@ import java.util.Date;
  * @Date: 2022/9/11 16:42
  * @Description: 获取比较时间工具类
  **/
+@Slf4j
 public class CompareTimeUtil {
 
     /**
@@ -88,7 +90,7 @@ public class CompareTimeUtil {
             keyString = keyString.concat("&").concat(newCompareTime);
             FileUtils.writeStringToFile(new File(filePath), keyString, String.valueOf(StandardCharsets.UTF_8));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         } finally {
             // 重置
             CompareTimeUtil.COMPARE_TIME = null;
@@ -157,7 +159,7 @@ public class CompareTimeUtil {
             //  因为是明文，所以直接返回
             return new String(bytes);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("解密失败！");
         }
     }
@@ -195,7 +197,7 @@ public class CompareTimeUtil {
             // 输出加密后的数据
             return Base64.encode(bytes);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException("加密失败！");
         }
     }

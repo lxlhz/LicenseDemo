@@ -56,7 +56,7 @@ public class CipherController {
                 return resultMap;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
         String applicationInfo = CipherUtil.getApplicationInfo();
